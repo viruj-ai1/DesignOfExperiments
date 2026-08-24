@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useStore } from '../store/useStore'
 import { Projects, Analysis } from '../services/api'
 import toast from 'react-hot-toast'
+import logo from '../assets/logo.png'
 
 export default function Welcome() {
   const { setProject, setStep, setAnalysis, setOptimum } = useStore()
@@ -87,7 +88,7 @@ export default function Welcome() {
       {/* Hero */}
       <div className="welcome-hero" style={{ paddingBottom: '2rem' }}>
         <div style={{ height: '100px', marginBottom: '1rem', display: 'flex', justifyContent: 'center' }}>
-          <img src="/src/assets/logo.png" alt="Viruj Pharma Logo" style={{ height: '100%', objectFit: 'contain' }} />
+          <img src={logo} alt="Viruj Pharma Logo" style={{ height: '100%', objectFit: 'contain' }} />
         </div>
         <h1 className="hero-title">
           Viruj <span>Chematrix</span>

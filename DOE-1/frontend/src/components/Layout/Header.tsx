@@ -3,6 +3,7 @@ import { useStore } from '../../store/useStore'
 import { Projects, Analysis } from '../../services/api'
 import toast from 'react-hot-toast'
 import AuditTrailModal from '../../screens/AuditTrailModal'
+import logo from '../../assets/logo.png'
 
 export default function Header() {
   const { currentProject, stages, activeStageId, setStep, setProject, setAnalysis, setOptimum } = useStore()
@@ -40,7 +41,7 @@ export default function Header() {
     <>
       <header className="app-header">
         <div className="header-logo">
-          <img src="/src/assets/logo.png" alt="Viruj Pharma" style={{ height: '44px', objectFit: 'contain' }} />
+          <img src={logo} alt="Viruj Pharma" style={{ height: '44px', objectFit: 'contain' }} />
           <div>
             <div className="logo-sub" style={{ marginTop: '4px' }}>Viruj Chematrix</div>
           </div>
