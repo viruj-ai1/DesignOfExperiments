@@ -94,7 +94,7 @@ export default function Welcome() {
           Viruj <span>Chematrix</span>
         </h1>
         <p className="hero-sub">
-          End-to-end Design of Experiments platform. Screen factors, build response surface models,
+          End-to-end Design of Experiments platform. Screen factors, execute laboratory runs, 
           and discover optimal process conditions with Gaussian Process Bayesian optimization.
         </p>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', justifyContent: 'center' }}>
