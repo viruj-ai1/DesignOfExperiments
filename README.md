@@ -1,53 +1,53 @@
 # DesignOfExperiments
 
-**Viruj Pharma | Fosravuconazole DOE Optimizer**
+A comprehensive and modern Design of Experiments (DOE) Optimization Portal developed by Viruj Chematrix. This application provides a unified interface for experimental design, lab data logging, AI-driven parameter optimization, and compliance reporting for the synthesis of Fosravuconazole L-Lysine Ethanolate.
 
-An AI-assisted Design of Experiments (DOE) optimization system for planning and optimizing the synthesis stages of Fosravuconazole L-Lysine Ethanolate.
+## 🚀 Features
+
+* **Secure Authentication & Audit Trail**: Robust access control with 21 CFR Part 11 compliant audit logging to ensure data privacy and regulatory integrity.
+* **Modern User Interface**: Built with an intuitive, chemist-centric design offering a highly responsive, fast, and seamless lab experience.
+* **DOE Matrix Engine**: Automatically generates full/fractional factorial and response surface (Box-Behnken, Central Composite) experimental designs.
+* **Data Visualization & Analytics**: Seamlessly integrated interactive charts, contour plots, and overlay operating windows for real-time data analysis.
+* **AI & Bayesian Optimization**: Smart recommendation engine that suggests optimal parameter conditions and the next best experimental run.
+* **Export & Compliance Reporting**: 1-click export of matrices to Excel/CSV (Minitab/JMP compatible) and downloadable audit summary reports.
+
+## 💻 Tech Stack
+
+* **Frontend / Framework**: HTML5, JavaScript / React, Tailwind CSS
+* **Data Visualization / Backend**: Python, FastAPI / Flask, Streamlit / Gradio
+* **Analytics Engine**: NumPy, SciPy, Statsmodels, Pandas
+
+## 🛠️ Quick Start
+
+### Prerequisites
+Make sure you have Python (3.9+) and Node.js installed on your machine.
+
+### Backend & Analytics Setup
+1. Navigate to the project root directory.
+2. Install Python dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Start the application backend/analytics engine:
+   ```bash
+   python app.py
+   ```
+
+### Frontend Setup (If applicable)
+1. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
 ---
 
-## 🚀 API Documentation
-
-The backend exposes a comprehensive set of RESTful APIs to manage the entire DOE workflow—from project initialization to statistical analysis. Below is a detailed explanation of all available endpoints:
-
-### 1. Project & Risk Assessment (Phase 0)
-* **`POST /api/projects/`**
-  Creates a new optimization project. Accepts parameters like project name, target compound, and overall objective.
-* **`GET /api/projects/{project_id}`**
-  Retrieves full details of a specific project, including generated experiments and results.
-* **`PUT /api/projects/{project_id}/phase0`**
-  Saves the Phase 0 configuration. This includes defining QTPP (Quality Target Product Profile), CQAs (Critical Quality Attributes), synthesis stages, and the initial risk assessment matrix (e.g., severity, occurrence, detectability).
-* **`GET /api/projects/{project_id}/phase0`**
-  Fetches the saved Phase 0 configuration for a project.
-
-### 2. Factors & Responses Configuration
-* **`POST /api/projects/{project_id}/factors`**
-  Defines the independent variables (factors) for the experiment, such as Temperature, Time, or Pressure. Includes their baseline, lower limits, and upper limits.
-* **`POST /api/projects/{project_id}/responses`**
-  Defines the dependent variables (responses) you want to measure and optimize, such as Yield (%) or Purity (%), along with their goals (maximize/minimize).
-
-### 3. Design of Experiments (DOE) Engine
-* **`POST /api/doe/recommend`**
-  Analyzes the configured factors and constraints and recommends the optimal statistical design type (e.g., Full Factorial, Fractional Factorial, Plackett-Burman).
-* **`POST /api/doe/evaluate`**
-  Evaluates a selected DOE design key, providing statistical power analysis and identifying any factor aliasing/confounding.
-* **`POST /api/doe/generate`**
-  Generates the actual matrix of experimental runs based on the selected design type and predefined constraints.
-
-### 4. Data Entry & Statistical Analysis
-* **`POST /api/projects/{project_id}/results`**
-  Uploads the observed results (e.g., measured yield) for the generated experimental runs.
-* **`POST /api/analysis/run`**
-  Performs core statistical analysis on the results. Generates ANOVA tables, calculates main effects, and fits regression models.
-* **`POST /api/analysis/overlay`**
-  Generates data for Design Space Overlay plots, allowing users to visualize the optimal operating window across two factors simultaneously.
-* **`POST /api/analysis/monte-carlo`**
-  Runs Monte Carlo simulations using standard deviations of factors to predict response robustness and failure probabilities.
-
-### 5. Reporting, Auditing & Compliance
-* **`GET /api/reports/{project_id}/summary`**
-  Generates a full traceability summary report, linking CQAs to factors, designs, and final analysis results.
-* **`POST /api/projects/{project_id}/audit`**
-  Manually appends an action to the 21 CFR Part 11 compliant audit log.
-* **`POST /api/projects/{project_id}/lock-campaign`**
-  Locks a specific experimental campaign/stage to prevent further modifications, ensuring data integrity for regulatory compliance.
+© 2026 Viruj Chematrix Pvt. Ltd. All rights reserved.
+```
