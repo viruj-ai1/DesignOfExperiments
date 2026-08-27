@@ -5,8 +5,11 @@ import os
 import json
 import pathlib
 from dotenv import load_dotenv
-env_path = pathlib.Path(__file__).parent.parent / ".env"
-load_dotenv(dotenv_path=env_path, override=True)
+
+# Force load the .env file from the backend directory
+_backend_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+_env_path = os.path.join(_backend_dir, ".env")
+load_dotenv(_env_path, override=True)
 
 from langchain_groq import ChatGroq
 from langchain_core.prompts import PromptTemplate
