@@ -111,10 +111,10 @@ export default function RecommendDOE() {
             <span>{errorMsg}</span>
           </div>
           <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Process factors must be defined for this project in Step 03 before generating DOE design recommendations.
+            Process factors must be defined for this project in Step 08 before generating DOE design recommendations.
           </p>
           <button className="btn btn-secondary btn-sm" onClick={() => setStep('define-factors')}>
-            ← Go to Step 03: Define Factors
+            ← Go to Step 08: Define Factors
           </button>
         </div>
       ) : loading ? (

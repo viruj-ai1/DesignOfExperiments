@@ -11,7 +11,8 @@ from contextlib import asynccontextmanager
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+env_path = pathlib.Path(__file__).parent / ".env"
+load_dotenv(dotenv_path=env_path)
 
 from database import init_db
 from api.projects    import router as projects_router
