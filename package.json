@@ -1,0 +1,8 @@
+{
+  "name": "design-of-experiments-root",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "cd DOE-1/frontend && npm install && npm run build"
+  }
+}
