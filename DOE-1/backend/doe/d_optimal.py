@@ -4,7 +4,7 @@
 import numpy as np
 from typing import Dict, Any, List
 
-def generate_d_optimal(k: int, factors: list = None, constraints: list = None, n_runs: int = None) -> Dict[str, Any]:
+def generate_d_optimal(k: int, factors: list = None, constraints: list = None, n_runs: int = None, quick_preview: bool = False) -> Dict[str, Any]:
     """
     Generate a D-Optimal design maximizing det(X'X) for constrained or custom factor spaces.
     Supports linear constraints like Factor A + Factor B <= X.
@@ -17,7 +17,7 @@ def generate_d_optimal(k: int, factors: list = None, constraints: list = None, n
     # Generate candidate grid points in [-1, 1]^k
     grid_levels = np.array([-1.0, -0.5, 0.0, 0.5, 1.0])
     # Random sampling candidate pool
-    n_candidates = min(500, 5**k if k <= 4 else 300)
+    n_candidates = min(100 if quick_preview else 500, 5**k if k <= 4 else (50 if quick_preview else 300))
     
     if k <= 4:
         mesh = np.array(np.meshgrid(*[grid_levels]*k)).T.reshape(-1, k)
@@ -73,7 +73,8 @@ def generate_d_optimal(k: int, factors: list = None, constraints: list = None, n
     X = np.array([model_row(p) for p in chosen_pts])
 
     # Exchange algorithm iterations
-    for _ in range(10):
+    n_iters = 1 if quick_preview else 10
+    for _ in range(n_iters):
         for r in range(n_runs):
             best_det = np.linalg.det(X.T @ X + 1e-8 * np.eye(X.shape[1]))
             best_pt = chosen_pts[r]

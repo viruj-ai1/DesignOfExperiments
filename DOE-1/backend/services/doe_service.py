@@ -55,7 +55,7 @@ def recommend_designs(k: int, phase: str, has_htc: bool = False, constraints: li
         options.append({"key": "SPLIT_PLOT", "label": "Split-Plot Design (HTC Factors)", "recommended": True, **sp})
 
     if constraints and len(constraints) > 0:
-        d_opt = generate_d_optimal(k, factors, constraints)
+        d_opt = generate_d_optimal(k, factors, constraints, quick_preview=True)
         options.append({"key": "D_OPTIMAL", "label": "D-Optimal / Custom (Constrained)", "recommended": True, **d_opt})
 
     if phase == "screening":
@@ -90,7 +90,7 @@ def recommend_designs(k: int, phase: str, has_htc: bool = False, constraints: li
 
     # D-Optimal option if not added yet
     if not any(o["key"] == "D_OPTIMAL" for o in options):
-        d_opt = generate_d_optimal(k, factors, constraints)
+        d_opt = generate_d_optimal(k, factors, constraints, quick_preview=True)
         options.append({"key": "D_OPTIMAL", "label": "D-Optimal / Custom Design", "recommended": False, **d_opt})
 
     # Attach total runs

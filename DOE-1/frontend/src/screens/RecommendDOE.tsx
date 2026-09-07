@@ -60,7 +60,7 @@ export default function RecommendDOE() {
     return (
       <div style={{ maxWidth: '860px' }}>
         <div className="page-header">
-          <div className="page-header-tag">Step 04</div>
+          <div className="page-header-tag">Step 09</div>
           <h1 className="page-title">Recommend DOE Design</h1>
           <p className="page-desc">Choose the right design for your experiment. The system recommends optimal classical & QbD designs based on your factors.</p>
         </div>
@@ -80,6 +80,8 @@ export default function RecommendDOE() {
   }
 
   const icons: Record<string,string> = { FF:'🔢', FF_S:'🔢', PB:'📊', TAGUCHI:'⚙️', CCD_FC:'🎯', CCD_ROT:'🌀', BBD:'🔷', MIXTURE:'🧪', DSD:'⚡', D_OPTIMAL:'🎯', SPLIT_PLOT:'🧱' }
+
+  const isMissingFactors = errorMsg?.toLowerCase().includes('factor') || errorMsg?.toLowerCase().includes('no factors')
 
   return (
     <div>
@@ -110,12 +112,30 @@ export default function RecommendDOE() {
             <span>⚠️</span>
             <span>{errorMsg}</span>
           </div>
-          <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
-            Process factors must be defined for this project in Step 08 before generating DOE design recommendations.
-          </p>
-          <button className="btn btn-secondary btn-sm" onClick={() => setStep('define-factors')}>
-            ← Go to Step 08: Define Factors
-          </button>
+          {isMissingFactors ? (
+            <>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                Process factors must be defined for this project in Step 08 before generating DOE design recommendations.
+              </p>
+              <button className="btn btn-secondary btn-sm" onClick={() => setStep('define-factors')}>
+                ← Go to Step 08: Define Factors & Responses
+              </button>
+            </>
+          ) : (
+            <>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginBottom: '1rem' }}>
+                The request timed out or encountered a server issue while generating recommendations.
+              </p>
+              <div style={{ display: 'flex', gap: '0.75rem' }}>
+                <button className="btn btn-primary btn-sm" onClick={() => loadOptions(phase)}>
+                  ↺ Retry Recommendation
+                </button>
+                <button className="btn btn-secondary btn-sm" onClick={() => setStep('define-factors')}>
+                  ← Go to Step 08: Define Factors & Responses
+                </button>
+              </div>
+            </>
+          )}
         </div>
       ) : loading ? (
         <div className="loading-overlay"><div className="spinner" /> Calculating optimal design…</div>
