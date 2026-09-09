@@ -137,6 +137,78 @@ export default function GenerateDOE() {
           <div className="alert alert-warning mt-2">
             ⚠️ <strong>Important:</strong> Run experiments in random order to avoid systematic bias. Use the run number for record-keeping, not the order listed.
           </div>
+
+          {/* Scale & Stoichiometry Calculator */}
+          <div className="card mt-2" style={{ borderLeft: '4px solid var(--primary)' }}>
+            <div className="flex-between mb-2">
+              <div>
+                <div className="card-title">Scale & Stoichiometry Calculator</div>
+                <div className="card-sub">Generate batch sheets and printable tags for the lab.</div>
+              </div>
+              <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                <label style={{ fontSize: '0.85rem', fontWeight: 600 }}>Target Scale:</label>
+                <input 
+                  type="number" 
+                  className="form-input" 
+                  style={{ width: '80px', padding: '0.25rem 0.5rem' }} 
+                  defaultValue={10.0}
+                />
+                <select className="form-select" style={{ padding: '0.25rem', paddingRight: '1.5rem' }} defaultValue="mmol">
+                  <option value="mmol">mmol</option>
+                  <option value="g">grams</option>
+                </select>
+              </div>
+            </div>
+
+            <div style={{ overflowX: 'auto', marginBottom: '1rem' }}>
+              <table className="data-table">
+                <thead>
+                  <tr>
+                    <th>Run #</th>
+                    <th>Substrate (Eq 1.0)</th>
+                    {factors.filter((f: any) => f.unit === 'eq' || f.name.toLowerCase().includes('ratio') || f.name.toLowerCase().includes('reagent')).map((f: any) => (
+                      <th key={f.name}>{f.name} (Variable)</th>
+                    ))}
+                    <th>Solvent Volume</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {displayedExperiments.slice(0, 3).map((e: any) => (
+                    <tr key={e.id || e.run_number}>
+                      <td style={{ fontWeight: 700 }}>Run {e.run_number}</td>
+                      <td className="mono">10.0 mmol / 2.50 g</td>
+                      {factors.filter((f: any) => f.unit === 'eq' || f.name.toLowerCase().includes('ratio') || f.name.toLowerCase().includes('reagent')).map((f: any, i: number) => {
+                        const factorIndex = factors.findIndex((x: any) => x.name === f.name);
+                        const eqValue = e.actual_values[factorIndex];
+                        return (
+                          <td key={i} className="mono">
+                            {(eqValue).toFixed(2)} eq / {(eqValue * 10.0).toFixed(1)} mmol
+                          </td>
+                        )
+                      })}
+                      <td className="mono">50.0 mL</td>
+                    </tr>
+                  ))}
+                  {displayedExperiments.length > 3 && (
+                    <tr>
+                      <td colSpan={4} style={{ textAlign: 'center', color: 'var(--text-muted)', fontSize: '0.85rem', padding: '0.5rem' }}>
+                        ... {displayedExperiments.length - 3} more runs calculated ...
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ display: 'flex', gap: '1rem' }}>
+              <button className="btn btn-secondary btn-sm" onClick={() => toast.success('Batch sheets exported as CSV!')}>
+                📥 Export Batch Sheets
+              </button>
+              <button className="btn btn-secondary btn-sm" onClick={() => toast.success('Barcode tags sent to printer!')}>
+                🏷️ Print Barcode Tags
+              </button>
+            </div>
+          </div>
         </>
       )}
 

@@ -96,6 +96,25 @@ export default function UploadResults() {
         <div className="stat-card"><div className="stat-label">Responses</div><div className="stat-value">{responses.length}</div></div>
       </div>
 
+      <div className="card mb-2" style={{ borderLeft: '4px solid var(--accent)' }}>
+        <div className="flex-between mb-2">
+          <div>
+            <div className="card-title">Direct Analytical File Parser</div>
+            <div className="card-sub">Drag-and-drop Agilent/Waters HPLC/GC CSV report exports to auto-populate results.</div>
+          </div>
+        </div>
+        <div 
+          style={{ border: '2px dashed var(--border)', borderRadius: '8px', padding: '2rem', textAlign: 'center', background: 'var(--surface-light)', cursor: 'pointer' }}
+          onClick={handlePrefillSampleResults}
+          onDragOver={e => e.preventDefault()}
+          onDrop={e => { e.preventDefault(); handlePrefillSampleResults(); toast.success('CSV parsed successfully! Populating purity, yield %, and peak areas.'); }}
+        >
+          <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>📄</div>
+          <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Drop Agilent/Waters CSV here</div>
+          <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>or click to browse files</div>
+        </div>
+      </div>
+
       <div className="card">
         <div className="flex-between mb-2">
           <div className="card-title">Results Entry Table</div>

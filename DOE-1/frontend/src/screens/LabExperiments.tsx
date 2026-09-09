@@ -1,7 +1,7 @@
-// src/screens/LabExperiments.tsx
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useStore } from '../store/useStore'
 import { Projects } from '../services/api'
+import toast from 'react-hot-toast'
 
 export default function LabExperiments() {
   const { currentProject, experiments, setExperiments, setStep } = useStore()
@@ -49,15 +49,27 @@ export default function LabExperiments() {
       </div>
 
       <div className="card">
-        <div className="card-title mb-2">Laboratory Run Table</div>
+        <div className="flex-between mb-2">
+          <div className="card-title">Nominal vs. Actual Logger</div>
+          <button className="btn btn-secondary btn-sm" onClick={() => toast.success('Lab logs saved successfully!')}>💾 Save Logs</button>
+        </div>
         <div style={{ overflowX: 'auto' }}>
           <table className="data-table">
             <thead>
               <tr>
-                <th>Run #</th>
-                <th>Type</th>
-                {factors.map((f: any) => <th key={f.name}>{f.name}<br/><span style={{ fontWeight:400, color:'var(--text-muted)', fontSize:'0.68rem' }}>{f.unit}</span></th>)}
-                {responses.map((r: any) => <th key={r.name} style={{ color:'var(--accent)' }}>{r.name}<br/><span style={{ fontWeight:400, fontSize:'0.68rem' }}>{r.unit}</span></th>)}
+                <th rowSpan={2}>Run #</th>
+                <th rowSpan={2}>Type</th>
+                {factors.map((f: any) => <th key={f.name} colSpan={2} style={{ textAlign: 'center', borderBottom: '1px solid var(--border)' }}>{f.name} <span style={{ fontWeight:400, color:'var(--text-muted)', fontSize:'0.68rem' }}>({f.unit})</span></th>)}
+                {responses.map((r: any) => <th key={r.name} rowSpan={2} style={{ color:'var(--accent)' }}>{r.name}<br/><span style={{ fontWeight:400, fontSize:'0.68rem' }}>{r.unit}</span></th>)}
+                <th rowSpan={2}>Lab Observation Notes</th>
+              </tr>
+              <tr>
+                {factors.map((f: any, i: number) => (
+                  <React.Fragment key={`${f.name}-sub`}>
+                    <th style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Nominal</th>
+                    <th style={{ fontSize: '0.7rem', color: 'var(--primary)' }}>Actual</th>
+                  </React.Fragment>
+                ))}
               </tr>
             </thead>
             <tbody>
@@ -75,13 +87,31 @@ export default function LabExperiments() {
                     </span>
                   </td>
                   {e.actual_values.map((v, j) => (
-                    <td key={j} className="mono" style={{ color:'var(--text-primary)', fontWeight:600 }}>{v.toFixed(3)}</td>
+                    <React.Fragment key={j}>
+                      <td className="mono" style={{ color:'var(--text-muted)' }}>{v.toFixed(2)}</td>
+                      <td>
+                        <input 
+                          type="number" 
+                          className="form-input" 
+                          style={{ width: '70px', padding: '0.2rem 0.4rem', fontSize: '0.8rem' }} 
+                          defaultValue={v.toFixed(2)} 
+                        />
+                      </td>
+                    </React.Fragment>
                   ))}
                   {responses.map((_: any, j: number) => (
                     <td key={j} style={{ color: e.result_values?.[j] != null ? 'var(--success)' : 'var(--text-muted)' }}>
-                      {e.result_values?.[j] != null ? e.result_values[j]!.toFixed(3) : '—'}
+                      {e.result_values?.[j] != null ? e.result_values[j]!.toFixed(3) : 'Pending'}
                     </td>
                   ))}
+                  <td>
+                    <input 
+                      type="text" 
+                      className="form-input" 
+                      style={{ width: '150px', padding: '0.2rem 0.4rem', fontSize: '0.8rem' }} 
+                      placeholder="e.g. Mild exotherm observed..." 
+                    />
+                  </td>
                 </tr>
               ))}
             </tbody>

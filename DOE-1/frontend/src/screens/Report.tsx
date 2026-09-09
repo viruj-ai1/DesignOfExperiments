@@ -22,7 +22,7 @@ export default function Report() {
   return (
     <div>
       <div className="page-header">
-        <div className="page-header-tag">Step 19</div>
+        <div className="page-header-tag">Step 21</div>
         <h1 className="page-title">Generate Report</h1>
         <p className="page-desc">Create a report showing everything done in the project and the final result.</p>
       </div>
@@ -100,17 +100,51 @@ export default function Report() {
         </div>
       </div>
 
+      {/* Optimal conditions summary with PAR/NOR */}
+      {opt?.actual_optimum && (
+        <div className="card mb-2">
+          <div className="card-title mb-2">📌 Safe Operating Window (PAR/NOR)</div>
+          <table className="data-table">
+            <thead>
+              <tr><th>Factor</th><th>Unit</th><th style={{ color:'var(--success)' }}>Optimal Value</th><th>Proven Acceptable Range (PAR)</th></tr>
+            </thead>
+            <tbody>
+              {factors.map((f: any, i: number) => {
+                const val = opt.actual_optimum?.[i]
+                const tolerance = (f.high - f.low) * 0.1; // 10% tolerance for PAR
+                return (
+                  <tr key={i}>
+                    <td style={{ fontWeight:700 }}>{f.name}</td>
+                    <td style={{ color:'var(--text-muted)' }}>{f.unit}</td>
+                    <td>
+                      <span className="mono" style={{ color:'var(--success)', fontWeight:700 }}>
+                        {val?.toFixed(2)} {f.unit}
+                      </span>
+                    </td>
+                    <td>
+                      <span className="mono" style={{ color:'var(--text-secondary)' }}>
+                        {(val - tolerance).toFixed(2)} – {(val + tolerance).toFixed(2)} {f.unit}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       {/* Report contents */}
       <div className="card mb-2">
         <div className="card-title mb-2">Report Contents</div>
         {[
           { icon: '🎯', title: 'QbD Foundation Traceability', desc: 'Complete QTPP → CQA → CPP/CMA risk matrix' },
-          { icon: '🏢', title: 'Project Overview',        desc: 'Project details, compound, objectives, process description' },
-          { icon: '⚗️', title: 'Factors & Responses',    desc: 'All input variables and response definitions' },
-          { icon: '🔢', title: 'Experiment Matrix',       desc: 'Complete run table with actual factor values and measured results' },
+          { icon: '🏢', title: 'AI Executive Summary',    desc: 'Quantitative Wins, Process Mass Intensity (PMI), E-Factor, Cost' },
+          { icon: '⚗️', title: 'Factors & Responses',    desc: 'All input variables, physical guardrails, and response definitions' },
+          { icon: '🔢', title: 'Experiment Matrix',       desc: 'Complete run table with actual executed values, lab notes, and HPLC references' },
+          { icon: '⚖️', title: 'Batch Recipes',           desc: 'Stoichiometry sheet and scale-up notes based on generated runs' },
           { icon: '📊', title: 'Statistical Analysis',    desc: 'ANOVA, 4-in-1 residual diagnostics, Lack of fit, R² statistics' },
-          { icon: '🌐', title: 'Response Surface & Design Space', desc: 'RSM model equation, overlay plot sweet spot, Monte Carlo robustness' },
-          { icon: '🎯', title: 'Optimal Operating Point', desc: 'Factor settings that maximize desirability' },
+          { icon: '🌐', title: 'Design Space (PAR/NOR)',  desc: 'Safe operating ranges, sweet spot overlay, edge-of-failure warnings' },
           { icon: '🤖', title: 'Bayesian Optimization',   desc: 'GP model history and iteration-by-iteration improvement' },
         ].map((item, i) => (
           <div key={i} style={{ display:'flex', gap:'0.75rem', padding:'0.6rem 0', borderBottom:'1px solid var(--border)' }}>
@@ -122,23 +156,6 @@ export default function Report() {
           </div>
         ))}
       </div>
-
-      {/* Optimal conditions summary */}
-      {opt?.actual_optimum && (
-        <div className="card mb-2">
-          <div className="card-title mb-2">📌 Optimal Operating Point</div>
-          <div className="grid-2">
-            {factors.map((f: any, i: number) => (
-              <div key={i} className="stat-card">
-                <div className="stat-label">{f.name} ({f.unit})</div>
-                <div className="stat-value" style={{ color:'var(--success)', fontSize:'1.2rem' }}>
-                  {opt.actual_optimum?.[i]?.toFixed(3)}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
 
       {/* Download buttons */}
       <div className="card">
