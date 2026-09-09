@@ -88,10 +88,10 @@ def build_pdf_report(project: dict, factors: list, responses: list,
     # ── 1. Project Overview ──────────────────────────────────
     section("1. Project Overview")
     meta = [
-        ["Project Name",  project.get("name", "")],
-        ["Compound",      project.get("compound", "")],
-        ["Objective",     project.get("objective", "")],
-        ["DOE Type",      project.get("doe_type", "")],
+        ["Project Name",  Paragraph(project.get("name", "") or "", BODY)],
+        ["Compound",      Paragraph(project.get("compound", "") or "", BODY)],
+        ["Objective",     Paragraph(project.get("objective", "") or "", BODY)],
+        ["DOE Type",      Paragraph(project.get("doe_type", "") or "", BODY)],
         ["Bayes Iters",   str(project.get("bayes_iter", 0))],
     ]
     t = Table(meta, colWidths=[5*cm, 11*cm])
