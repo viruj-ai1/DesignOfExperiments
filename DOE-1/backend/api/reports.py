@@ -41,13 +41,16 @@ def _collect_project_data(project_id: int, db: Session) -> dict:
                 }
         except Exception:
             pass
+            
+    traceability = build_traceability_matrix(proj, factors, responses, analyses)
 
     return dict(
         project={"name": proj.name, "compound": proj.compound,
                  "objective": proj.objective, "description": proj.description,
-                 "doe_type": proj.doe_type, "bayes_iter": proj.bayes_iter},
+                 "doe_type": proj.doe_type, "bayes_iter": proj.bayes_iter,
+                 "traceability_matrix": traceability},
         factors=[{"name": f.name, "unit": f.unit, "low": f.low,
-                  "high": f.high, "baseline": f.baseline} for f in factors],
+                  "high": f.high, "baseline": f.baseline, "stage_id": f.stage_id} for f in factors],
         responses=[{"name": r.name, "unit": r.unit, "goal": r.goal,
                     "target": r.target} for r in responses],
         experiments=[{"run_number": e.run_number, "run_type": e.run_type,
