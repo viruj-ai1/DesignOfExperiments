@@ -25,29 +25,50 @@ export default function QTPPDefinition() {
   const { currentProject, qtpp, setQtpp, setStep, addAuditLog } = useStore()
 
   const DEFAULT_QTPP: QTPPItem[] = [
-    { id: 'qtpp-1', attribute: 'Purity by GC', criterion: '>= 98.0% w/w', justification: 'Pharmacopoeial', type: 'Assay-Purity' },
-    { id: 'qtpp-2', attribute: 'Diacetyl Impurity', criterion: '<= 0.15% w/w', justification: 'Patient-Critical', type: 'Impurity' },
-    { id: 'qtpp-3', attribute: 'KSM-1', criterion: '<= 0.50% w/w', justification: 'Internal Spec', type: 'Impurity' },
-    { id: 'qtpp-4', attribute: 'Single maximum unknown impurity', criterion: '<= 0.10% w/w', justification: 'Regulatory Guideline', type: 'Impurity' },
-    { id: 'qtpp-5', attribute: 'Total Impurities', criterion: '<= 1.00% w/w', justification: 'Pharmacopoeial', type: 'Impurity' },
-    { id: 'qtpp-6', attribute: 'Identification by IR', criterion: 'Conforms to Reference Spectrum', justification: 'Pharmacopoeial', type: 'Identity' },
-    { id: 'qtpp-7', attribute: 'Residue on ignition', criterion: '<= 0.10% w/w', justification: 'Pharmacopoeial', type: 'Impurity' },
-    { id: 'qtpp-8', attribute: 'Specific Optical Rotation (SOR)', criterion: '+28.0° to +32.0°', justification: 'Pharmacopoeial', type: 'Physical Property' },
-    { id: 'qtpp-9', attribute: 'Melting point', criterion: '152°C - 156°C', justification: 'Pharmacopoeial', type: 'Physical Property' },
-    { id: 'qtpp-10', attribute: 'Assay (HPLC Anhydrous)', criterion: '98.0% - 102.0% w/w', justification: 'Pharmacopoeial', type: 'Assay-Purity' },
-    { id: 'qtpp-17', attribute: 'Water Content / Karl Fischer', criterion: '<= 0.50% w/w', justification: 'Pharmacopoeial', type: 'Physical Property' },
-    { id: 'qtpp-24', attribute: 'Appearance, Powder Color & Description', criterion: 'White to off-white or pale yellow crystalline powder', justification: 'Pharmacopoeial', type: 'Appearance & Color' }
+    { id: 'qtpp-1', attribute: 'Purity by GC', operator: '≥', criterion: '98.0% w/w', justification: 'Pharmacopoeial', type: 'Assay-Purity' },
+    { id: 'qtpp-2', attribute: 'Diacetyl Impurity', operator: '≤', criterion: '0.15% w/w', justification: 'Patient-Critical', type: 'Impurity' },
+    { id: 'qtpp-3', attribute: 'KSM-1', operator: '≤', criterion: '0.50% w/w', justification: 'Internal Spec', type: 'Impurity' },
+    { id: 'qtpp-4', attribute: 'Single maximum unknown impurity', operator: '≤', criterion: '0.10% w/w', justification: 'Regulatory Guideline', type: 'Impurity' },
+    { id: 'qtpp-5', attribute: 'Total Impurities', operator: '≤', criterion: '1.00% w/w', justification: 'Pharmacopoeial', type: 'Impurity' },
+    { id: 'qtpp-6', attribute: 'Identification by IR', operator: 'Conforms', criterion: 'to Reference Spectrum', justification: 'Pharmacopoeial', type: 'Identity' },
+    { id: 'qtpp-7', attribute: 'Residue on ignition', operator: '≤', criterion: '0.10% w/w', justification: 'Pharmacopoeial', type: 'Impurity' },
+    { id: 'qtpp-8', attribute: 'Specific Optical Rotation (SOR)', operator: 'Range', criterion: '+28.0° to +32.0°', justification: 'Pharmacopoeial', type: 'Physical Property' },
+    { id: 'qtpp-9', attribute: 'Melting point', operator: 'Range', criterion: '152°C - 156°C', justification: 'Pharmacopoeial', type: 'Physical Property' },
+    { id: 'qtpp-10', attribute: 'Assay (HPLC Anhydrous)', operator: 'Range', criterion: '98.0% - 102.0% w/w', justification: 'Pharmacopoeial', type: 'Assay-Purity' },
+    { id: 'qtpp-17', attribute: 'Water Content / Karl Fischer', operator: '≤', criterion: '0.50% w/w', justification: 'Pharmacopoeial', type: 'Physical Property' },
+    { id: 'qtpp-24', attribute: 'Appearance, Powder Color & Description', operator: '=', criterion: 'White to off-white or pale yellow crystalline powder', justification: 'Pharmacopoeial', type: 'Appearance & Color' }
   ]
 
-  const [items, setItems] = useState<QTPPItem[]>(
-    qtpp.length > 0 ? qtpp : DEFAULT_QTPP
-  )
+  const [items, setItems] = useState<QTPPItem[]>(() => {
+    const initial = qtpp.length > 0 ? qtpp : DEFAULT_QTPP
+    return initial.map(item => {
+      if (item.operator) return item
+      
+      let op = '='
+      let crit = item.criterion || ''
+      
+      if (crit.startsWith('>= ') || crit.startsWith('≥ ')) {
+        op = '≥'
+        crit = crit.replace(/^(>=|≥)\s*/, '')
+      } else if (crit.startsWith('<= ') || crit.startsWith('≤ ')) {
+        op = '≤'
+        crit = crit.replace(/^(<=|≤)\s*/, '')
+      } else if (crit.includes(' - ') || crit.includes(' to ')) {
+        op = 'Range'
+      } else if (crit.toLowerCase().startsWith('conforms')) {
+        op = 'Conforms'
+      }
+      
+      return { ...item, operator: op, criterion: crit }
+    })
+  })
   const [saving, setSaving] = useState(false)
 
   const handleAddRow = () => {
     const newItem: QTPPItem = {
       id: `qtpp-${Date.now()}`,
       attribute: '',
+      operator: '=',
       criterion: '',
       justification: 'Pharmacopoeial',
       type: 'Assay-Purity'
@@ -139,13 +160,28 @@ export default function QTPPDefinition() {
                     />
                   </td>
                   <td>
-                    <input
-                      type="text"
-                      className="input input-sm"
-                      placeholder="e.g. ≥ 99.0% w/w"
-                      value={row.criterion}
-                      onChange={e => handleChange(row.id, 'criterion', e.target.value)}
-                    />
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <select
+                        className="input input-sm"
+                        style={{ width: '80px', flexShrink: 0 }}
+                        value={row.operator || '='}
+                        onChange={e => handleChange(row.id, 'operator', e.target.value)}
+                      >
+                        <option value="=">=</option>
+                        <option value="≤">≤</option>
+                        <option value="≥">≥</option>
+                        <option value="Range">Range</option>
+                        <option value="Conforms">Conforms</option>
+                      </select>
+                      <input
+                        type="text"
+                        className="input input-sm"
+                        style={{ flex: 1 }}
+                        placeholder="e.g. 99.0% w/w"
+                        value={row.criterion}
+                        onChange={e => handleChange(row.id, 'criterion', e.target.value)}
+                      />
+                    </div>
                   </td>
                   <td>
                     <select

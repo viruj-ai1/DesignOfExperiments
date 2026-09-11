@@ -2,7 +2,7 @@
 #  app.py  –  FastAPI Application Entry Point
 # ============================================================
 import sys, pathlib
-sys.path.insert(0, str(pathlib.Path(__file__).parent))
+sys.path.insert(0, str(pathlib.Path(__file__).resolve().parent))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,7 +11,7 @@ from contextlib import asynccontextmanager
 import os
 from dotenv import load_dotenv
 
-env_path = pathlib.Path(__file__).parent / ".env"
+env_path = pathlib.Path(__file__).resolve().parent / ".env"
 load_dotenv(dotenv_path=env_path, override=True)
 
 from database import init_db
@@ -19,7 +19,7 @@ from api.projects    import router as projects_router
 from api.doe         import router as doe_router
 from api.analysis    import router as analysis_router
 from api.optimization import router as optimization_router
-from api.reports     import router as reports_router
+from api.report_routes import router as reports_router
 
 
 @asynccontextmanager

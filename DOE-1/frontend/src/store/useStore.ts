@@ -14,6 +14,7 @@ export type Step =
 export interface QTPPItem {
   id: string
   attribute: string
+  operator?: string
   criterion: string
   justification: string
   type: string

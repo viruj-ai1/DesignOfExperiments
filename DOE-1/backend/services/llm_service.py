@@ -37,8 +37,7 @@ def generate_llm_summary(project_name: str, factors: list, responses: list, anal
     # Safely get the API key from either GROQ_API_KEY or GROQ_API
     api_key = os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API")
     if not api_key:
-        # We don't have an API key, we will rely on the fallback below by raising an error
-        pass
+        return {"error": f"Groq API key not found. Env path: {_env_path}, Exists: {os.path.exists(_env_path)}, Content_len: {len(open(_env_path).read()) if os.path.exists(_env_path) else 0}"}
 
     # Initialize the LLM (will raise exception if key is invalid, which is caught below)
     llm = ChatGroq(
@@ -129,8 +128,17 @@ from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 
 def generate_chat_response(project_name: str, factors: list, responses: list, analyses: list, gp_optimum: dict, n_obs: int, chat_history: list, new_message: str) -> dict:
     api_key = os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API")
-    
-    # Format the input data to string
+    if not api_key:
+        return {"error": f"Groq API key not found. Env path: {_env_path}, Exists: {os.path.exists(_env_path)}, Content_len: {len(open(_env_path).read()) if os.path.exists(_env_path) else 0}"}
+
+    try:
+        llm = ChatGroq(
+            temperature=0.3, 
+            model_name="llama-3.3-70b-versatile",
+            api_key=api_key
+        )
+    except Exception as e:
+        return {"error": f"Failed to initialize Groq LLM: {str(e)}"}
     factor_str = ", ".join([f"{f['name']} ({f['low']} to {f['high']} {f.get('unit','')})" for f in factors])
     response_str = ", ".join([f"{r['name']} (Goal: {r['goal']})" for r in responses])
     
