@@ -1,0 +1,17 @@
+node_modules/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+.env
+*.db
+!doe_workflow.db
+*.zip
+*.pdf
+*.docx
+.DS_Store
+Thumbs.db
+dist/
+build/
