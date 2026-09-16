@@ -1,0 +1,87 @@
+
+--- Page 1 ---
+VIRUJ PHARMAC E UTICALS PVT. LTD. 
+ Process Write - up   Confidential 
+ P a g e   |   1 
+ PROCESS WRITE - UP 
+ F O R 
+ LOXOPROFEN SODIUM   STAGE   1 
+ Name   Designation   Sign and Date 
+ Prepared by CRD 
+ Checked by CRD 
+ Approved by DQA 
+--- Page 2 ---
+VIRUJ PHARMAC E UTICALS PVT. LTD. 
+ Process Write - up   Confidential 
+ P a g e   |   2 
+ Synthesis of   Stage   1   ( LOXOPROFEN SODIUM ): 
+ Raw Materials: 
+ 1   2 - (4 - (bromomethyl)phenyl) 
+ propanoic acid 
+ 100.0   g   243.1   0.411   1.0 
+ 2   Sulfuric acid   40.35   g   98.08   0.411   1.0 
+ 3   M ethano l   300 .0   mL   -   -   3 
+ 4   Toluene   Lot - 1   200.0   mL   -   -   2 
+ 5   Toluene   Lot - 2   200.0   mL   -   -   2 
+ 6   Toluene   Lot - 3   200.0   mL   -   -   2 
+ 7   W ater   Lot - 1   200.0   mL   -   -   2 
+ 8   W ater   Lot - 2   200.0   mL   -   -   2 
+ 9   W ater   Lot   - 3   100.0   mL   -   -   1 
+ 10   Sodium bi carbonate Lot - 1   10   g   84   0.119   0.3 
+ 11   Sodium bi carbonate Lot - 2   10   g   84   0.119   0.3 
+ 12   Sodium chloride   5   g   58.44   0.085   0.21 
+ 13   Sodium sulphate   5   g   142.04   0.035   0.1 
+ Procedure: 
+ 1.   Arrange clean and dry RBF. 
+ 2.   Charge   M ethanol   under stirring   into the RBF   at 25 - 30°C. 
+ 3.   Charge   2 - (4 - ( bromomethyl) phenyl )   propanoic acid   at   25 - 30°C. 
+ 4.   Cool the reaction mass   temperature   to   5 - 15°C . 
+ 5.   Slowly add   Sulfuric acid into the reaction mixture at   5 - 15°C , Exotherm observed . 
+ 6.   Maintain the reaction mass at   5 - 15°C for   3   hour s .   & submitted the   IPC - 1   sample for checking   2 - (4 - 
+ (bromomethyl) phenyl) propanoic acid   content by HPLC ( Limit: NMT 0.5%),   if result complies follow 
+--- Page 3 ---
+VIRUJ PHARMAC E UTICALS PVT. LTD. 
+ Process Write - up   Confidential 
+ P a g e   |   3 
+ Step No:7 and if result does not comply, follow the next Step No:6 and submit the sample for every 1 
+ hour. 
+ 7.   Charge   Toluene   Lot - 1   &   stir the reaction mass for 15 minutes at 10 - 15°C. 
+ 8.   Meanwhile prep are   S odium bicarbonate solution Lot - 1 ( S odium bicarbonate Lot - 1 in   W ater Lot - 1) 
+ 9.   Slowly add the   S odium bicarbonate solution in   reaction mass   at 10 - 20 °C. 
+ 10.   S tir the reaction mass for   10 - 15 minutes at   25 - 30 °C. 
+ 11.   Settle and separate both the layers   for   30   minutes 
+ 12.   Charge the   Aqueous   layer into the RBF at   25 - 30 °C.   Organic Layer……Qty 
+ 13.   Add   Toluene   Lot - 2   to the above Aqueous layer   at   25 - 30 °C. 
+ 14.   Stir the reaction mass for 10 - 15 minutes at   25 - 30 °C. 
+ 15.   Settle and separate both the layers   for   10 - 15 minutes 
+ 16.   Charge the   Aqueous   layer into the RBF at   25 - 30 °C.   Organic Layer……Qty 
+ 17.   Add   Toluene   Lot - 3 to the above   Aqueous layer   at   25 - 30 °C. 
+ 18.   Stir the reaction mass for 10 - 15 minutes at   25 - 30 °C. 
+ 19.   Settle and separate both the layers   for   10 - 15 minutes. 
+ 20.   Charge the   Aqueous   layer into the RBF at   25 - 30 °C.   Organic Layer……Qty 
+ 21.   Charge al l the Organic layers from Step . No .1 2 ,1 6 , 20   into the RBF at   25 - 30 °C. 
+ 22.   Meanwhile   prepare   S odium bicarbonate solution Lot - 2 ( S odium bicarbonate Lot - 2 in   W ater Lot - 2) 
+ 23.   Charge   S odium bicarbonate solution   Lot - 2   to the   above   O rganic   layer s   at   25 - 30 °C . 
+ 24.   S tir the reaction mass for   10 - 15 minutes at   25 - 30 °C 
+ 25.   Settle and separate both the layers   for 10 - 15 minutes. 
+ 26.   Charge the   Aqueous   layer into the RBF at   25 - 30 °C.   Organic Layer……Qty 
+ 27.   Meanwhile prepare   S odium   C hloride solution ( S odium   C hloride in   W ater Lot - 3) 
+ 28.   Charge the Organic   layer   from Step No.25   into the   RBF at 25 - 30 °C. 
+ 29.   Charge   S odium   chloride   solution   in   O rganic   layer   25 - 30 °C. 
+ 30.   S tir the reaction mass for   10 - 15 minutes at   2 5 - 3 5 °C. 
+ 31.   Settle and separate both the layers   for 10 - 15 minutes. 
+ 32.   Charge the   Aqueous   layer into the RBF at   10 - 15 °C.   Organic Layer……Qty 
+ 33.   Collected   O rganic layer   and   dry with   S odium   S ulphate   at 25 - 35°C. 
+ 34.   Distill   off   toluene completely under vacuum at below 50°C. 
+ Note:   -   D on’t go more temperature while distillation due to   impurities formation at higher 
+ temperature. 
+ 35.   Cool the reaction mass   temperature   to   30 - 35   °C . 
+--- Page 4 ---
+VIRUJ PHARMAC E UTICALS PVT. LTD. 
+ Process Write - up   Confidential 
+ P a g e   |   4 
+ 36.   Unload the crude and record the weight. 
+ Quantity…... gm 
+ 37.   Submit sample for complete analysis. 
+ Input (g)   Output (g)   Expected Yield (w/w)   Theoretical Yield (w/w)   % Yield 
+ 100   100 - 110   1.0 - 1.1   1: 1. 05   95 - 10 4 

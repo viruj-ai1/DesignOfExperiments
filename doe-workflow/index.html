@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Viruj Chematrix | Viruj Pharma</title>
+  <meta name="description"
+    content="Full end-to-end DOE workflow: project creation, DOE generation, statistical analysis, Gaussian Process modeling, and Bayesian optimization for pharmaceutical process development." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <!-- math.js for client-side calculations -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@12.4.2/lib/browser/math.js"></script>
+</head>
+
+<body>
+
+  <!-- ── Animated Background ─────────────────────────────── -->
+  <div class="bg-canvas">
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="bg-orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <!-- ── Application Shell ───────────────────────────────── -->
+  <div id="app">
+
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-icon-wrap">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <path
+              d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18" />
+          </svg>
+        </div>
+        <div>
+          <div class="logo-brand-text">Viruj Pharma</div>
+          <div class="logo-sub-text">Viruj Chematrix</div>
+        </div>
+      </div>
+
+      <div class="header-center" id="headerProject">
+        <span class="text-muted text-sm">No project loaded</span>
+      </div>
+
+      <div class="header-actions">
+        <button class="btn-sm" id="btnHome" onclick="goHome()" title="Dashboard">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z" />
+            <polyline points="9,22 9,12 15,12 15,22" />
+          </svg>
+          Dashboard
+        </button>
+        <button class="btn-sm primary" id="btnNewProject" onclick="startNewProject()">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
+          New Project
+        </button>
+      </div>
+    </header>
+
+    <!-- Body -->
+    <div class="app-body">
+
+      <!-- Sidebar -->
+      <nav class="sidebar" id="sidebar">
+        <div class="sidebar-section-label">Workflow</div>
+
+        <div id="stepList"><!-- injected by JS --></div>
+      </nav>
+
+      <!-- Main Content Area -->
+      <main class="main-content" id="mainContent">
+        <!-- Screens rendered here by app.js -->
+      </main>
+
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
