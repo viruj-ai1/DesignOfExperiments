@@ -200,7 +200,7 @@ def load_rocuronium_preset(db: Session = Depends(get_db)):
     # Phase 0 QbD Foundation
     qtpp = [
         {"id": "qtpp-1", "attribute": "Purity by GC", "criterion": ">= 98.0% w/w", "justification": "Pharmacopoeial", "type": "Assay-Purity"},
-        {"id": "qtpp-2", "attribute": "Diacetyl Impurity", "criterion": "<= 0.15% w/w", "justification": "Patient-Critical", "type": "Impurity"},
+        {"id": "qtpp-2", "attribute": "Diacetyl Impurity", "criterion": "<= 0.15% w/w", "justification": "Critical Spec", "type": "Impurity"},
         {"id": "qtpp-3", "attribute": "KSM-1", "criterion": "<= 0.50% w/w", "justification": "Internal Spec", "type": "Impurity"},
         {"id": "qtpp-4", "attribute": "Single maximum unknown impurity", "criterion": "<= 0.10% w/w", "justification": "Regulatory Guideline", "type": "Impurity"},
         {"id": "qtpp-5", "attribute": "Total Impurities", "criterion": "<= 1.00% w/w", "justification": "Pharmacopoeial", "type": "Impurity"},

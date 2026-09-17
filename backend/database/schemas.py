@@ -12,7 +12,7 @@ class QTPPItem(BaseModel):
     id: str
     attribute: str
     criterion: str
-    justification: str  # Pharmacopoeial / Regulatory Guideline / Patient-Critical / Internal Spec
+    justification: str  # Pharmacopoeial / Regulatory Guideline / Critical Spec / Internal Spec
     type: str           # Identity / Assay-Purity / Impurity / Physical Property / Residual Solvent / Microbial / Stability
 
 class CQAMapping(BaseModel):
@@ -21,6 +21,7 @@ class CQAMapping(BaseModel):
     appliesTo: str      # 'Final API' | 'Intermediate'
     stageName: str = ""
     method: str = ""
+    operator: Optional[str] = ""
     range: str = ""
     justification: str = ""
     linkedQtppIds: List[str] = []

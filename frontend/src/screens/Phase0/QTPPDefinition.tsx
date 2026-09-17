@@ -6,7 +6,7 @@ import { Projects } from '../../services/api'
 const JUSTIFICATION_OPTIONS = [
   'Pharmacopoeial',
   'Regulatory Guideline',
-  'Patient-Critical',
+  'Critical Spec',
   'Internal Spec'
 ]
 
@@ -26,7 +26,7 @@ export default function QTPPDefinition() {
 
   const DEFAULT_QTPP: QTPPItem[] = [
     { id: 'qtpp-1', attribute: 'Purity by GC', operator: '≥', criterion: '98.0% w/w', justification: 'Pharmacopoeial', type: 'Assay-Purity' },
-    { id: 'qtpp-2', attribute: 'Diacetyl Impurity', operator: '≤', criterion: '0.15% w/w', justification: 'Patient-Critical', type: 'Impurity' },
+    { id: 'qtpp-2', attribute: 'Diacetyl Impurity', operator: '≤', criterion: '0.15% w/w', justification: 'Critical Spec', type: 'Impurity' },
     { id: 'qtpp-3', attribute: 'KSM-1', operator: '≤', criterion: '0.50% w/w', justification: 'Internal Spec', type: 'Impurity' },
     { id: 'qtpp-4', attribute: 'Single maximum unknown impurity', operator: '≤', criterion: '0.10% w/w', justification: 'Regulatory Guideline', type: 'Impurity' },
     { id: 'qtpp-5', attribute: 'Total Impurities', operator: '≤', criterion: '1.00% w/w', justification: 'Pharmacopoeial', type: 'Impurity' },

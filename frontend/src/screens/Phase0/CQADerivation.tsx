@@ -1,20 +1,66 @@
 // src/screens/Phase0/CQADerivation.tsx – Screen A2: CQA Derivation
 import { useState } from 'react'
-import { useStore, CQAMapping } from '../../store/useStore'
+import { useStore, CQAMapping, QTPPItem } from '../../store/useStore'
 import { Projects } from '../../services/api'
+
+function parseOperatorAndRange(operator?: string, range?: string): { operator: string; range: string } {
+  if (operator && ['>', '<', '>=', '<=', '=', 'Range'].includes(operator)) {
+    return { operator, range: range || '' }
+  }
+  if (!range) return { operator: '<=', range: '' }
+
+  let op = '<='
+  let val = range.trim()
+
+  if (val.startsWith('>=') || val.startsWith('≥')) {
+    op = '>='
+    val = val.replace(/^(>=|≥)\s*/, '')
+  } else if (val.startsWith('<=') || val.startsWith('≤')) {
+    op = '<='
+    val = val.replace(/^(<=|≤)\s*/, '')
+  } else if (val.startsWith('>')) {
+    op = '>'
+    val = val.replace(/^>\s*/, '')
+  } else if (val.startsWith('<')) {
+    op = '<'
+    val = val.replace(/^<\s*/, '')
+  } else if (val.startsWith('=')) {
+    op = '='
+    val = val.replace(/^=\s*/, '')
+  } else if (val.includes('-') || val.toLowerCase().includes('to') || val.toLowerCase().includes('range')) {
+    op = 'Range'
+  }
+
+  return { operator: op, range: val }
+}
+
+function extractQtppSpec(q: QTPPItem): { operator: string; range: string } {
+  let rawOp = q.operator || ''
+  let rawCrit = q.criterion || ''
+
+  if (rawOp === '≤') rawOp = '<='
+  if (rawOp === '≥') rawOp = '>='
+
+  if (['>', '<', '>=', '<=', '=', 'Range'].includes(rawOp)) {
+    return { operator: rawOp, range: rawCrit }
+  }
+
+  return parseOperatorAndRange(undefined, rawCrit)
+}
 
 export default function CQADerivation() {
   const { currentProject, qtpp, cqas, setCqas, setStep, addAuditLog } = useStore()
 
-  const [items, setItems] = useState<CQAMapping[]>(
-    cqas.length > 0 ? cqas : [
+  const [items, setItems] = useState<CQAMapping[]>(() => {
+    const initial: CQAMapping[] = cqas.length > 0 ? cqas : [
       {
         id: 'cqa-1',
         name: 'API HPLC Purity',
         appliesTo: 'Final API',
         stageName: 'Stage 3',
         method: 'HPLC-UV (254 nm)',
-        range: '≥ 99.0%',
+        operator: '>=',
+        range: '99.0%',
         justification: 'High purity is essential for safety and therapeutic efficacy.',
         linkedQtppIds: qtpp.length > 0 ? [qtpp[0].id] : []
       },
@@ -24,7 +70,8 @@ export default function CQADerivation() {
         appliesTo: 'Intermediate',
         stageName: 'Stage 2',
         method: 'LC-MS/MS',
-        range: '≤ 0.15%',
+        operator: '<=',
+        range: '0.15%',
         justification: 'Uncontrolled buildup in Stage 2 leads to toxic impurity in final API.',
         linkedQtppIds: qtpp.length > 1 ? [qtpp[1].id] : []
       },
@@ -34,7 +81,8 @@ export default function CQADerivation() {
         appliesTo: 'Final API',
         stageName: 'Stage 3',
         method: 'GC-Headspace',
-        range: '≤ 500 ppm',
+        operator: '<=',
+        range: '500 ppm',
         justification: 'Residual organic solvents must strictly comply with ICH Q3C limits.',
         linkedQtppIds: qtpp.length > 3 ? [qtpp[3].id] : []
       },
@@ -44,12 +92,18 @@ export default function CQADerivation() {
         appliesTo: 'Final API',
         stageName: 'Stage 3',
         method: 'Laser Diffraction',
+        operator: 'Range',
         range: '10 µm - 50 µm',
         justification: 'Particle size governs dissolution kinetics and bio-availability.',
         linkedQtppIds: qtpp.length > 7 ? [qtpp[7].id] : []
       }
     ]
-  )
+
+    return initial.map((item): CQAMapping => {
+      const parsed = parseOperatorAndRange(item.operator, item.range)
+      return { ...item, operator: parsed.operator, range: parsed.range }
+    })
+  })
   const [saving, setSaving] = useState(false)
 
   const handleAddCQA = () => {
@@ -59,6 +113,7 @@ export default function CQADerivation() {
       appliesTo: 'Final API',
       stageName: '',
       method: '',
+      operator: '<=',
       range: '',
       justification: '',
       linkedQtppIds: qtpp.length > 0 ? [qtpp[0].id] : []
@@ -78,10 +133,34 @@ export default function CQADerivation() {
     setItems(items.map(c => {
       if (c.id === cqaId) {
         const currentLinks = c.linkedQtppIds || []
-        const updatedLinks = currentLinks.includes(qtppId)
+        const isCurrentlyLinked = currentLinks.includes(qtppId)
+        const updatedLinks = isCurrentlyLinked
           ? currentLinks.filter(id => id !== qtppId)
           : [...currentLinks, qtppId]
-        return { ...c, linkedQtppIds: updatedLinks }
+
+        let updatedOperator = c.operator
+        let updatedRange = c.range
+
+        // Auto-fill Range/Limit from target QTPP spec if field is empty or unset when linking
+        if (!isCurrentlyLinked) {
+          const targetQtpp = qtpp.find(q => q.id === qtppId)
+          if (targetQtpp) {
+            const { operator: autoOp, range: autoRange } = extractQtppSpec(targetQtpp)
+            if (!c.range || c.range.trim() === '') {
+              updatedRange = autoRange
+            }
+            if (!c.operator || c.operator.trim() === '') {
+              updatedOperator = autoOp
+            }
+          }
+        }
+
+        return {
+          ...c,
+          linkedQtppIds: updatedLinks,
+          operator: updatedOperator,
+          range: updatedRange
+        }
       }
       return c
     }))
@@ -137,7 +216,9 @@ export default function CQADerivation() {
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '2px' }}>Spec: {q.criterion}</div>
                 <div style={{ display: 'flex', gap: '4px', marginTop: '4px' }}>
                   <span className="badge badge-secondary" style={{ fontSize: '0.65rem' }}>{q.type}</span>
-                  <span className="badge badge-accent" style={{ fontSize: '0.65rem' }}>{q.justification}</span>
+                  <span className="badge badge-accent" style={{ fontSize: '0.65rem' }}>
+                    {q.justification === 'Patient-Critical' ? 'Critical Spec' : q.justification}
+                  </span>
                 </div>
               </div>
             ))}
@@ -211,13 +292,29 @@ export default function CQADerivation() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '0.75rem', marginBottom: '0.75rem' }}>
                   <div>
                     <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Acceptable Range / Limit</label>
-                    <input
-                      type="text"
-                      className="input input-sm"
-                      placeholder="e.g. ≤ 0.20%"
-                      value={cqa.range || ''}
-                      onChange={e => handleChange(cqa.id, 'range', e.target.value)}
-                    />
+                    <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                      <select
+                        className="input input-sm"
+                        value={cqa.operator || '<='}
+                        onChange={e => handleChange(cqa.id, 'operator', e.target.value)}
+                        style={{ width: '90px', flexShrink: 0 }}
+                      >
+                        <option value=">">&gt;</option>
+                        <option value="<">&lt;</option>
+                        <option value=">=">&ge;</option>
+                        <option value="<=">&le;</option>
+                        <option value="=">=</option>
+                        <option value="Range">Range</option>
+                      </select>
+                      <input
+                        type="text"
+                        className="input input-sm"
+                        placeholder="e.g. 0.20% or 10 µm - 50 µm"
+                        value={cqa.range || ''}
+                        onChange={e => handleChange(cqa.id, 'range', e.target.value)}
+                        style={{ flex: 1 }}
+                      />
+                    </div>
                   </div>
                   <div>
                     <label style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>Risk Justification (Impact on QTPP)</label>

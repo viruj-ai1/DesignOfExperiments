@@ -26,6 +26,7 @@ export interface CQAMapping {
   appliesTo: 'Final API' | 'Intermediate'
   stageName?: string
   method?: string
+  operator?: string
   range?: string
   justification?: string
   linkedQtppIds: string[]
