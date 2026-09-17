@@ -36,7 +36,7 @@ export interface StageItem {
   id: string
   order: number
   name: string
-  unitOpType: 'Reaction' | 'Workup' | 'Crystallization' | 'Filtration' | 'Drying' | 'Purification' | 'Other'
+  unitOpType: 'Reaction' | 'Workup / Extraction' | 'Crystallization / Isolation' | 'Distillation / Solvent Swap' | 'Drying / Micronization' | string
   description?: string
   intermediateProduced?: string
 }

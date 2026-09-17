@@ -5,45 +5,68 @@ import { Projects } from '../../services/api'
 
 const UNIT_OP_OPTIONS = [
   'Reaction',
-  'Workup',
-  'Crystallization',
-  'Filtration',
-  'Drying',
-  'Purification',
-  'Other'
+  'Workup / Extraction',
+  'Crystallization / Isolation',
+  'Distillation / Solvent Swap',
+  'Drying / Micronization'
 ]
+
+function normalizeUnitOp(op?: string): string {
+  if (!op) return 'Reaction'
+  if (op === 'Workup') return 'Workup / Extraction'
+  if (op === 'Crystallization') return 'Crystallization / Isolation'
+  if (op === 'Drying' || op === 'Filtration') return 'Drying / Micronization'
+  if (op === 'Purification') return 'Crystallization / Isolation'
+  if (UNIT_OP_OPTIONS.includes(op)) return op
+  return 'Reaction'
+}
 
 export default function RouteMapping() {
   const { currentProject, stages, setStages, setStep, addAuditLog } = useStore()
 
-  const [items, setItems] = useState<StageItem[]>(
-    stages.length > 0 ? stages : [
+  const [items, setItems] = useState<StageItem[]>(() => {
+    const stage1DefaultName = (currentProject as any)?.activeStage ||
+      (currentProject?.name && currentProject.name.toLowerCase().includes('stage') ? currentProject.name : 'Stage 1: Morpholine Condensation & Ring-Opening')
+
+    const initial: StageItem[] = stages.length > 0 ? stages : [
       {
         id: 'stage-1',
         order: 1,
-        name: 'Stage 1: Coupling Reaction',
+        name: stage1DefaultName,
         unitOpType: 'Reaction',
-        description: 'Condensation reaction of Starting Material A and B',
-        intermediateProduced: 'Intermediate Int-1'
+        description: 'Nucleophilic ring-opening & condensation reaction with morpholine',
+        intermediateProduced: '2β-Morpholino-16α,17α-epoxy-5α-androstan-3α-ol'
       },
       {
         id: 'stage-2',
         order: 2,
-        name: 'Stage 2: Deprotection & Workup',
-        unitOpType: 'Workup',
-        description: 'Acidic deprotection followed by liquid-liquid extraction',
-        intermediateProduced: 'Intermediate Int-2'
+        name: 'Stage 2: Quenching & Aqueous Extraction',
+        unitOpType: 'Workup / Extraction',
+        description: 'Aqueous wash and phase separation to remove excess morpholine',
+        intermediateProduced: 'Crude Stage-I Liquid Extract'
       },
       {
         id: 'stage-3',
         order: 3,
-        name: 'Stage 3: API Final Crystallization',
-        unitOpType: 'Crystallization',
-        description: 'Controlled cooling crystallization to yield API Form I',
-        intermediateProduced: 'Final API (Unmilled)'
+        name: 'Stage 3: Crystallization & Isolation',
+        unitOpType: 'Crystallization / Isolation',
+        description: 'Controlled cooling crystallization and vacuum drying',
+        intermediateProduced: 'Pure Stage-I Intermediate'
       }
     ]
-  )
+
+    return initial.map((s, idx): StageItem => {
+      let stageName = s.name
+      if (idx === 0 && (!stageName || stageName.trim() === '' || stageName === 'Stage 1: Coupling Reaction')) {
+        stageName = stage1DefaultName
+      }
+      return {
+        ...s,
+        name: stageName,
+        unitOpType: normalizeUnitOp(s.unitOpType)
+      }
+    })
+  })
   const [saving, setSaving] = useState(false)
 
   const handleAddStage = () => {
