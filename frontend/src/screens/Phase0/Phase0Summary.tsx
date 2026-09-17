@@ -1,4 +1,5 @@
 // src/screens/Phase0/Phase0Summary.tsx – Screen A5: Phase 0 Summary & DOE Handoff
+import { useState } from 'react'
 import { useStore } from '../../store/useStore'
 import { Projects } from '../../services/api'
 
@@ -7,6 +8,8 @@ export default function Phase0Summary() {
     currentProject, stages, riskAssessments, cqas,
     setStep, setActiveStageId, addAuditLog
   } = useStore()
+
+  const [hoveredStageId, setHoveredStageId] = useState<string | null>(null)
 
   const handleStartDOECampaign = async (stageId: string, stageName: string) => {
     setActiveStageId(stageId)
@@ -76,7 +79,8 @@ export default function Phase0Summary() {
           <tbody>
             {stages.map((stage, idx) => {
               const params = riskAssessments[stage.id]?.parameters || []
-              const criticalCount = params.filter(p => p.criticalFlag).length
+              const criticalParams = params.filter(p => p.criticalFlag)
+              const criticalCount = criticalParams.length
 
               return (
                 <tr key={stage.id}>
@@ -84,10 +88,51 @@ export default function Phase0Summary() {
                   <td style={{ fontWeight: 700, color: 'var(--primary-light)' }}>{stage.name}</td>
                   <td><span className="badge badge-secondary">{stage.unitOpType}</span></td>
                   <td style={{ textAlign: 'center', fontWeight: 600 }}>{params.length}</td>
-                  <td style={{ textAlign: 'center' }}>
-                    <span className={`badge ${criticalCount > 0 ? 'badge-danger' : 'badge-secondary'}`}>
-                      {criticalCount} Critical
-                    </span>
+                  <td style={{ textAlign: 'center', position: 'relative' }}>
+                    <div
+                      style={{ position: 'relative', display: 'inline-block' }}
+                      onMouseEnter={() => setHoveredStageId(stage.id)}
+                      onMouseLeave={() => setHoveredStageId(null)}
+                    >
+                      <span
+                        className={`badge ${criticalCount > 0 ? 'badge-danger' : 'badge-secondary'}`}
+                        style={{ cursor: 'pointer', padding: '0.35rem 0.65rem' }}
+                      >
+                        {criticalCount} Critical
+                      </span>
+                      {hoveredStageId === stage.id && criticalCount > 0 && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '125%',
+                            left: '50%',
+                            transform: 'translateX(-50%)',
+                            backgroundColor: '#0f172a',
+                            color: '#f8fafc',
+                            padding: '0.65rem 0.85rem',
+                            borderRadius: '8px',
+                            boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6)',
+                            border: '1px solid rgba(255, 255, 255, 0.18)',
+                            whiteSpace: 'nowrap',
+                            zIndex: 999,
+                            textAlign: 'left',
+                            minWidth: '240px'
+                          }}
+                        >
+                          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent)', marginBottom: '0.4rem', borderBottom: '1px solid rgba(255,255,255,0.1)', paddingBottom: '3px' }}>
+                            Critical Process Parameters (CPPs):
+                          </div>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                            {criticalParams.map(p => (
+                              <div key={p.id} style={{ fontSize: '0.78rem', color: '#e2e8f0', display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+                                <span>• {p.name || 'Unnamed Parameter'}</span>
+                                <span style={{ fontWeight: 700, color: 'var(--danger-light)', fontSize: '0.75rem' }}>({p.rpn} RPN)</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <button
