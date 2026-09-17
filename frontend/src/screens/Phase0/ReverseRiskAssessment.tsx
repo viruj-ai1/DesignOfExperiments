@@ -69,6 +69,41 @@ export default function ReverseRiskAssessment() {
     return cqas
   }, [cqas, currentStage])
 
+  const isReactionStage = (currentStage?.unitOpType || '').toLowerCase().includes('reaction') ||
+    (currentStage?.name || '').toLowerCase().includes('reaction')
+
+  const handleAddStandardReactionParams = () => {
+    if (!currentStage) return
+    const stdParams: RiskParameter[] = [
+      { id: `p-${currentStage.id}-${Date.now()}-1`, name: 'Reaction Temperature (°C)', type: 'CPP-candidate', linkedCqaIds: relevantCQAs.map(c => c.id), severity: 4, occurrence: 4, detectability: 2, rpn: 32, rationale: 'High temp drives impurity formation; low temp causes slow conversion.', criticalFlag: 32 >= rpnThreshold, overrideReason: '' },
+      { id: `p-${currentStage.id}-${Date.now()}-2`, name: 'Molar Ratio (eq)', type: 'CPP-candidate', linkedCqaIds: relevantCQAs.map(c => c.id), severity: 4, occurrence: 3, detectability: 2, rpn: 24, rationale: 'Excess reagent increases residual impurity and solvent burden.', criticalFlag: 24 >= rpnThreshold, overrideReason: '' },
+      { id: `p-${currentStage.id}-${Date.now()}-3`, name: 'Reaction Time (h)', type: 'CPP-candidate', linkedCqaIds: relevantCQAs.map(c => c.id), severity: 3, occurrence: 3, detectability: 2, rpn: 18, rationale: 'Extended time causes product degradation.', criticalFlag: 18 >= rpnThreshold, overrideReason: '' },
+      { id: `p-${currentStage.id}-${Date.now()}-4`, name: 'Solvent Volume (L/kg)', type: 'CMA-candidate', linkedCqaIds: relevantCQAs.map(c => c.id), severity: 2, occurrence: 3, detectability: 2, rpn: 12, rationale: 'Affects reaction rate and crystallization recovery.', criticalFlag: 12 >= rpnThreshold, overrideReason: '' }
+    ]
+    const updatedParams = [...currentParams, ...stdParams]
+    setLocalRisk({
+      ...localRisk,
+      [currentStage.id]: { parameters: updatedParams }
+    })
+  }
+
+  // Handle RPN threshold change dynamically updating all parameters
+  const handleRpnThresholdChange = (valStr: string) => {
+    const val = parseInt(valStr) || 0
+    setRpnThreshold(val)
+    const updatedLocal: Record<string, { parameters: RiskParameter[] }> = {}
+    Object.keys(localRisk).forEach(sId => {
+      const stageParams = localRisk[sId]?.parameters || []
+      updatedLocal[sId] = {
+        parameters: stageParams.map(p => ({
+          ...p,
+          criticalFlag: p.rpn >= val
+        }))
+      }
+    })
+    setLocalRisk(updatedLocal)
+  }
+
   // Handle adding parameter
   const handleAddParam = () => {
     if (!currentStage) return
@@ -82,7 +117,7 @@ export default function ReverseRiskAssessment() {
       detectability: 3,
       rpn: 27,
       rationale: '',
-      criticalFlag: 27 > rpnThreshold,
+      criticalFlag: 27 >= rpnThreshold,
       overrideReason: ''
     }
     const updatedParams = [...currentParams, newParam]
@@ -99,7 +134,7 @@ export default function ReverseRiskAssessment() {
         const nextP = { ...p, [field]: value }
         if (['severity', 'occurrence', 'detectability'].includes(field)) {
           nextP.rpn = nextP.severity * nextP.occurrence * nextP.detectability
-          nextP.criticalFlag = nextP.rpn > rpnThreshold
+          nextP.criticalFlag = nextP.rpn >= rpnThreshold
         }
         return nextP
       }
@@ -190,7 +225,7 @@ export default function ReverseRiskAssessment() {
               className="input input-sm"
               style={{ width: '70px', textAlign: 'center' }}
               value={rpnThreshold}
-              onChange={e => setRpnThreshold(parseInt(e.target.value) || 100)}
+              onChange={e => handleRpnThresholdChange(e.target.value)}
             />
           </div>
 
@@ -233,9 +268,16 @@ export default function ReverseRiskAssessment() {
             <h3 style={{ fontSize: '1rem', fontWeight: 600, margin: 0 }}>Process Parameter Risk Matrix (Auto-Sorted by RPN)</h3>
             <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>RPN = Severity (1-5) × Occurrence (1-5) × Detectability (1-5)</div>
           </div>
-          <button className="btn btn-secondary btn-sm" onClick={handleAddParam}>
-            + Add Parameter
-          </button>
+          <div style={{ display: 'flex', gap: '0.5rem' }}>
+            {isReactionStage && (
+              <button className="btn btn-secondary btn-sm" onClick={handleAddStandardReactionParams}>
+                + Add Standard Reaction Parameters
+              </button>
+            )}
+            <button className="btn btn-secondary btn-sm" onClick={handleAddParam}>
+              + Add Parameter
+            </button>
+          </div>
         </div>
 
         <div style={{ overflowX: 'auto' }}>
@@ -256,9 +298,9 @@ export default function ReverseRiskAssessment() {
             </thead>
             <tbody>
               {sortedParams.map(p => {
-                const isOverThreshold = p.rpn > rpnThreshold
+                const isCritical = p.criticalFlag !== undefined ? p.criticalFlag : (p.rpn >= rpnThreshold)
                 return (
-                  <tr key={p.id} style={{ background: p.criticalFlag ? 'rgba(239,68,68,0.04)' : 'transparent' }}>
+                  <tr key={p.id} style={{ background: isCritical ? 'rgba(239,68,68,0.04)' : 'transparent' }}>
                     <td>
                       <input
                         type="text"
@@ -332,18 +374,18 @@ export default function ReverseRiskAssessment() {
                         {[1, 2, 3, 4, 5].map(n => <option key={n} value={n}>{n}</option>)}
                       </select>
                     </td>
-                    <td style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.9rem', color: isOverThreshold ? 'var(--danger-light)' : 'var(--success-light)' }}>
+                    <td style={{ textAlign: 'center', fontWeight: 800, fontSize: '0.9rem', color: isCritical ? 'var(--danger-light)' : 'var(--success-light)' }}>
                       {p.rpn}
                     </td>
                     <td style={{ textAlign: 'center' }}>
                       <button
                         type="button"
-                        className={`badge ${p.criticalFlag ? 'badge-danger' : 'badge-secondary'}`}
+                        className={`badge ${isCritical ? 'badge-danger' : 'badge-secondary'}`}
                         style={{ cursor: 'pointer', border: 'none' }}
                         onClick={() => handleToggleOverride(p.id)}
                         title="Click to toggle Critical Flag manual override"
                       >
-                        {p.criticalFlag ? 'CRITICAL' : 'Non-Critical'}
+                        {isCritical ? 'CRITICAL' : 'Non-Critical'}
                       </button>
                     </td>
                     <td>
