@@ -2,14 +2,39 @@
 import { useStore } from '../store/useStore'
 
 export default function CampaignDashboard() {
-  const { currentProject, stages, experiments, analysisResults, lockedCampaigns, setStep, setActiveStageId } = useStore()
+  const { currentProject, stages, experiments, analysisResults, lockedCampaigns, activeStageId, setStep, setActiveStageId } = useStore()
 
-  const getStageStatus = (stageId: string) => {
+  const getStageStatus = (stageId: string, idx: number) => {
     const isLocked = (lockedCampaigns || []).includes(stageId)
-    if (isLocked) return { label: 'Report Generated & Locked', badge: 'badge-accent', icon: '🔒' }
-    if (Object.keys(analysisResults).length > 0) return { label: 'Design Space Established', badge: 'badge-primary', icon: '✨' }
-    if (experiments.length > 0) return { label: 'DOE Running', badge: 'badge-warning', icon: '🧪' }
-    return { label: 'Not Started / Factors Pending', badge: 'badge-secondary', icon: '⏳' }
+    const isActive = activeStageId ? activeStageId === stageId : idx === 0
+
+    if (isLocked) {
+      return {
+        label: 'Completed & Locked',
+        badge: 'badge-success',
+        icon: '✓',
+        lockLabel: 'Locked',
+        lockBadge: 'badge-success'
+      }
+    }
+
+    if (isActive) {
+      return {
+        label: 'Active / In Progress',
+        badge: 'badge-primary',
+        icon: '⚡',
+        lockLabel: 'In Setup',
+        lockBadge: 'badge-primary'
+      }
+    }
+
+    return {
+      label: 'Pending DoE Setup',
+      badge: 'badge-secondary',
+      icon: '⏳',
+      lockLabel: 'Draft',
+      lockBadge: 'badge-secondary'
+    }
   }
 
   const handleOpenStageCampaign = (stageId: string) => {
@@ -58,8 +83,7 @@ export default function CampaignDashboard() {
               </tr>
             ) : (
               stages.map((stage, idx) => {
-                const status = getStageStatus(stage.id)
-                const isLocked = (lockedCampaigns || []).includes(stage.id)
+                const status = getStageStatus(stage.id, idx)
 
                 return (
                   <tr key={stage.id}>
@@ -72,11 +96,9 @@ export default function CampaignDashboard() {
                       </span>
                     </td>
                     <td style={{ textAlign: 'center' }}>
-                      {isLocked ? (
-                        <span className="badge badge-accent">Locked</span>
-                      ) : (
-                        <span style={{ color: 'var(--text-muted)', fontSize: '0.78rem' }}>Editable</span>
-                      )}
+                      <span className={`badge ${status.lockBadge}`}>
+                        {status.lockLabel}
+                      </span>
                     </td>
                     <td style={{ textAlign: 'right' }}>
                       <button
